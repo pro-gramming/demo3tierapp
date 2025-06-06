@@ -1,0 +1,109 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.env
+.venv
+env.bak/
+venv.bak/
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# MongoDB
+data/
+mongod.lock
+*.bson
+*.dump
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.ipynb_checkpoints
+*.sublime-workspace
+*.sublime-project
+
+# Testing
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Environment specific
+.env.local
+.env.development
+.env.test
+.env.production
+.env*.local
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Documentation
+_build/
+_static/
+_templates/
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.pyc
+
+# Kubernetes temporary files
+kubeconfig
+*.kubeconfig
+*.yaml.bak
+*.yml.bak
+
+# Temp files
+tmp/
+temp/
+.tmp/
+.temp/
+*.tmp
+*~ 
+.idea/
+.vscode/

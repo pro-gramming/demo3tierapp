@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="author" content="Sajal Debnath">
+        
+
+        <!-- Bootstrap CSS -->
+        <link rel="icon" href="/static/images/emp_db.png" type="image/x-icon">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/datatables.min.css') }}">
+        <title>Demo App</title>
+
+        <script src="/static/js/datatables.min.js"></script>
+        <script src="/static/js/script.js"></script> 
+
+        <style>
+            .center {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            *{
+                font-family: 'Metropolis', sans-serif;
+            }
+            .table-body-font {
+                font-size: 0.875em ;
+            }
+            #page-container {
+                position: relative;
+                min-height: 100vh;
+            }
+
+            #content-wrap {
+                padding-bottom: 2.5rem;    /* Footer height */
+            }
+
+            #footer {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 2.5rem;            /* Footer height */
+            }
+            .footer-container {
+                background: #0FA4AF;
+                color: white;
+            }
+            .btn-primary {
+                background-color: #024950;
+                border-color: #024950;
+            }
+            .btn-primary:hover {
+                background-color: #003135;
+                border-color: #003135;
+            }
+            .btn-info {
+                background-color: #0FA4AF;
+                border-color: #0FA4AF;
+                color: white;
+            }
+            .btn-info:hover {
+                background-color: #0d8e98;
+                border-color: #0d8e98;
+                color: white;
+            }
+            .btn-success {
+                background-color: #964734;
+                border-color: #964734;
+            }
+            .btn-success:hover {
+                background-color: #7e3c2c;
+                border-color: #7e3c2c;
+            }
+            .text-primary {
+                color: #024950 !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="page-container">
+            <div id="content-wrap">
+                <section id="navbar">
+                    <nav class="navbar navbar-expand-lg" style="background-color: #003135;">
+                        <div class="container-fluid justify-content-center">
+                            <a class="navbar-brand" href="#">
+                                {# <img src="/static/images/emp_db.png" alt="Logo" width="50" height="50"> #}
+                                <span class="mb-0" style="color:white; font-size: 35px;">Employee Records</span>
+                            </a>
+                        </div>
+                    </nav>
+                </section>
+
+                <!-- Generic Information -->
+                <section >
+                    <div class="container-fluid" >
+                        <div class="row g-2" >
+                            <div class="col " >
+                                <div class="p-3 border" style="background-color: #f8f9fa;">
+                                    <p>
+                                        This is a small application developed to showcase a 3-tier app model. 
+                                        The application shows a sample employee database with all the supported CRUD operations. 
+                                        To get more information about the application click on the Information tab below.
+                                    </p>
+                                    <p>
+                                        <strong style="color: #024950;"> Served from - Application Server: </strong> {{ host_name }}
+                                    </p>
+                                    <p>
+                                        <strong style="color: #024950;"> Served from - Web Server: </strong> {{ web_host_name }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Gap between elements -->
+                <div class="row">
+                    <div>
+                        <p>
+
+                        </p>
+                    </div>
+                </div>
+
+                {# <hr /> #}
+
+                <!-- Buttons -->
+                <section >
+                    <div class="container-fluid justify-content-center" >
+                        <div class="row g-2 justify-content-center" >
+                            <!-- All Records Button -->
+                            <div class="col center" >
+                                <a href="{{ url_for('employees') }}">
+                                    <button class="btn btn-sm btn-primary" type="button">All Records</button>
+                                </a>
+                            </div>
+                            <!-- Add Record Button -->
+                            <div class="col center" >
+                                <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Add Record</button>
+                            </div>
+                            <!-- Information Button -->
+                            <div class="col center" >
+                                <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#infoModal">Information</button>
+                            </div>
+                            <!-- Swagger docs Button -->
+                            <div class="col center" >
+                                <a href="http://{{ db_fqdn }}/docs" target="_blank" rel="noopener">
+                                    <button class="btn btn-sm btn-secondary" type="button" >Swagger UI</button>
+                                </a>
+                            </div>
+                            <!-- Redoc Button -->
+                            <div class="col center" >
+                                <a href="http://{{ db_fqdn }}/redoc" target="_blank" rel="noopener">
+                                    <button class="btn btn-sm btn-secondary" type="button">Redoc UI</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <hr />
+                <!-- Gap between elements -->
+                <div class="row">
+                    <div>
+                        <p>
+
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Body containing table -->
+                {% include 'modals.html' %}
+                {% block container %}{% endblock %}
+
+                <!-- Gap between elements -->
+                <div class="row">
+                    <div>
+                        <p>
+
+                        </p>
+                    </div>
+                </div>
+
+                
+            </div>
+            <!-- footer -->
+            
+            <section id="footer">
+                <div class="container-fluid footer-container" >
+                    <div class="row">
+                        <div class="col footer-col text-center" >
+                            <p>
+                                <b>Contact:</b> admin@example.com
+                            </p>
+                        </div>
+                        <div class="col footer-col text-center" >
+                            <p>
+                                © 2023 MIT License
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- Optional JavaScript; choose one of the two! -->
+
+        <!-- Option 1: Bootstrap Bundle with Popper -->
+        <script></script>
+    </body>
+</html>
+ 
