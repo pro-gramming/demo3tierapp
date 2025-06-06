@@ -4,12 +4,6 @@ on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
-    inputs:
-      push_to_dockerhub:
-        description: 'Push to DockerHub'
-        required: true
-        default: false
-        type: boolean
 
 jobs:
   build:
@@ -53,7 +47,6 @@ jobs:
 
   push_to_dockerhub:
     needs: build
-    if: github.event_name == 'workflow_dispatch' && inputs.push_to_dockerhub
     runs-on: ubuntu-latest
     
     steps:
@@ -84,3 +77,4 @@ jobs:
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/db-image:latest
           ${{ secrets.DOCKERHUB_USERNAME }}/db-image:${{ github.sha }}
+
