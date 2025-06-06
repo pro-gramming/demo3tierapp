@@ -15,7 +15,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 # Setup directories
 RUN mkdir -p /app/logs /run/nginx
 
-# Configure Nginx
+# Configure nginx
 COPY nginx.conf /etc/nginx/http.d/default.conf
 RUN sed -i 's/user nginx;/user root;/' /etc/nginx/nginx.conf
 
