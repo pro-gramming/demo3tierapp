@@ -49,7 +49,7 @@ RUN chmod +x /home/app/employee_db/gunicorn.start
 # Make healthcheck script executable
 RUN chmod +x /home/app/employee_db/healthcheck.sh
 
-# Expose port
+# Expose port 80
 EXPOSE 80
 
 # Copy entrypoint script
