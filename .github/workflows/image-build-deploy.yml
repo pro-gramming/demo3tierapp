@@ -3,14 +3,11 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
 
 jobs:
-  build:
+  build_and_push:
     runs-on: ubuntu-latest
-    outputs:
-      dirs: ${{ steps.changed-dirs.outputs.dirs }}
-
+    
     steps:
     - uses: actions/checkout@v4
       with:
@@ -23,34 +20,28 @@ jobs:
         HEAD_SHA=${{ github.sha }}
         
         CHANGED_DIRECTORIES=$(git diff --name-only $BASE_SHA $HEAD_SHA | grep -v "\." | sort -u || true)
-        echo "CHANGED_DIRECTORIES=$CHANGED_DIRECTORIES" >> $GITHUB_ENV
-        echo "dirs=$CHANGED_DIRECTORIES" >> $GITHUB_OUTPUT
+        echo "Detected changes in: $CHANGED_DIRECTORIES"
+        
+        if echo "$CHANGED_DIRECTORIES" | grep -q "App VM"; then
+          echo "CHANGED_APP=true" >> $GITHUB_ENV
+        else
+          echo "CHANGED_APP=false" >> $GITHUB_ENV
+        fi
+        
+        if echo "$CHANGED_DIRECTORIES" | grep -q "DB VM"; then
+          echo "CHANGED_DB=true" >> $GITHUB_ENV
+        else
+          echo "CHANGED_DB=false" >> $GITHUB_ENV
+        fi
+    
+    - name: Generate timestamp
+      id: timestamp
+      run: |
+        TIMESTAMP=$(date +%Y%m%d%H%M%S)
+        echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
-    
-    - name: Build and tag Docker images for App VM
-      if: contains(steps.changed-dirs.outputs.dirs, 'App VM')
-      run: |
-        SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-        cd "App VM"
-        docker build . --file Dockerfile \
-          --tag app-image:$SHORT_SHA
-    
-    - name: Build and tag Docker images for DB VM
-      if: contains(steps.changed-dirs.outputs.dirs, 'DB VM')
-      run: |
-        SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-        cd "DB VM"
-        docker build . --file Dockerfile \
-          --tag db-image:$SHORT_SHA
-
-  push_to_dockerhub:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
     
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
@@ -59,22 +50,22 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     
     - name: Build and push App VM image
-      if: contains(needs.build.outputs.dirs, 'App VM')
+      if: env.CHANGED_APP == 'true'
       uses: docker/build-push-action@v4
       with:
         context: "./App VM"
         push: true
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/app-image:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/app-image:${{ github.sha }}
+          ${{ secrets.DOCKERHUB_USERNAME }}/app-image:${{ env.TIMESTAMP }}
     
     - name: Build and push DB VM image
-      if: contains(needs.build.outputs.dirs, 'DB VM')
+      if: env.CHANGED_DB == 'true'
       uses: docker/build-push-action@v4
       with:
         context: "./DB VM"
         push: true
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/db-image:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/db-image:${{ github.sha }}
+          ${{ secrets.DOCKERHUB_USERNAME }}/db-image:${{ env.TIMESTAMP }}
 
